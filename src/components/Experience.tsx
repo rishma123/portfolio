@@ -9,7 +9,7 @@ const experiences = [
     context: "One of Germany's largest energy companies. Shared UI library used across 7 engineering teams.",
     stack: ["Angular", "TypeScript", "RxJS", "Signals", "SCSS", "Angular Material", "Jasmine", "Karma", "Playwright", "Storybook", "Azure DevOps"],
     achievements: [
-      "Built reusable Angular components with accessibility, responsive layouts and shared design patterns deployed across multiple internal applications",
+      "Built 10+ reusable Angular components with accessibility, responsive layouts and shared design patterns deployed across multiple internal applications",
       "Managed reactive state flows with RxJS, Signals and NgRx across shared components and consuming applications",
       "Published a Storybook catalog with previews, usage notes and API documentation, cutting codebase archaeology time for consuming teams",
       "Added unit and E2E test coverage with Jasmine, Karma and Playwright to catch regressions before staged releases",
@@ -30,7 +30,7 @@ const experiences = [
     ],
   },
   {
-    company: "Bosch Global Software Technologies",
+    company: "Bosch Global Software Technologies Pvt Ltd",
     role: "Fullstack Developer",
     period: "Feb 2021 – Nov 2021",
     location: "Bengaluru",
@@ -61,54 +61,27 @@ export function Experience() {
   return (
     <section id="experience" className="py-20 border-b border-border" data-testid="section-experience">
       <div className="container mx-auto px-6 max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.35 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.35 }}>
           <div className="grid md:grid-cols-[200px_1fr] gap-12">
             <div>
-              <h2 className="text-xs font-mono text-muted-foreground uppercase tracking-widest pt-1" data-testid="heading-experience">
+              <h2 className="text-xs font-mono font-bold uppercase tracking-widest pt-1" style={{ color: "hsl(173 65% 45%)" }} data-testid="heading-experience">
                 Experience
               </h2>
             </div>
             <div className="space-y-0">
               {experiences.map((exp, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 6 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.3, delay: index * 0.06 }}
-                  className="group relative pl-4 pr-4 py-8 -mx-4 rounded-md border border-transparent hover:border-border/60 hover:bg-card/50 transition-all duration-200"
-                  data-testid={`experience-card-${index}`}
-                >
-                  {/* Left accent bar on hover */}
+                <motion.div key={index} initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.3, delay: index * 0.06 }} className="group relative pl-4 pr-4 py-8 -mx-4 rounded-md border border-transparent hover:border-border/60 hover:bg-card/50 transition-all duration-200" data-testid={`experience-card-${index}`}>
                   <div className="absolute left-0 top-8 bottom-8 w-[2px] rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
-                    <h3 className="text-[15px] font-semibold text-foreground group-hover:text-primary transition-colors duration-150" data-testid={`exp-company-${index}`}>
-                      {exp.company}
-                    </h3>
-                    <span className="text-xs font-mono text-muted-foreground whitespace-nowrap" data-testid={`exp-period-${index}`}>
-                      {exp.period}
-                    </span>
+                    <h3 className="text-[15px] font-semibold text-foreground group-hover:text-primary transition-colors duration-150" data-testid={`exp-company-${index}`}>{exp.company}</h3>
+                    <span className="text-xs font-mono text-muted-foreground whitespace-nowrap" data-testid={`exp-period-${index}`}>{exp.period}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-3">
-                    <span className="text-sm text-muted-foreground" data-testid={`exp-role-${index}`}>
-                      {exp.role}
-                    </span>
+                    <span className="text-sm text-muted-foreground" data-testid={`exp-role-${index}`}>{exp.role}</span>
                     <span className="text-xs text-muted-foreground/50">{exp.location}</span>
                   </div>
-
-                  {exp.context && (
-                    <p className="text-xs text-muted-foreground/60 mb-3 italic" data-testid={`exp-context-${index}`}>
-                      {exp.context}
-                    </p>
-                  )}
-
-                  <ul className="space-y-1.5 mb-4" data-testid={`exp-achievements-${index}`}>
+                  {exp.context && <p className="text-xs text-muted-foreground/60 mb-3 italic">{exp.context}</p>}
+                  <ul className="space-y-1.5 mb-4">
                     {exp.achievements.map((item, i) => (
                       <li key={i} className="text-sm text-muted-foreground flex gap-2.5">
                         <span className="text-primary/50 mt-[5px] shrink-0">·</span>
@@ -116,13 +89,19 @@ export function Experience() {
                       </li>
                     ))}
                   </ul>
-
-                  {/* Tech stack tags — theme-aware */}
-                  <div className="flex flex-wrap gap-1.5" data-testid={`exp-stack-${index}`}>
+                  {/* Highlighted tech stack tags */}
+                  <div className="flex flex-wrap gap-2">
                     {exp.stack.map((tech) => (
                       <span
                         key={tech}
-                        className="font-mono text-xs px-2 py-0.5 rounded border border-border/60 bg-muted/40 text-muted-foreground"
+                        className="font-mono text-xs font-medium"
+                        style={{
+                          color: "hsl(173 65% 45%)",
+                          background: "hsl(173 65% 42% / 0.08)",
+                          border: "1px solid hsl(173 65% 42% / 0.25)",
+                          borderRadius: 5,
+                          padding: "2px 8px",
+                        }}
                       >
                         {tech}
                       </span>
