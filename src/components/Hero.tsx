@@ -125,7 +125,7 @@ export function Hero() {
 
           {/* LEFT: Content */}
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
-            <motion.div initial={{ width: 0 }} animate={{ width: 36 }} transition={{ duration: 0.5, delay: 0.15 }} className="h-px bg-primary mb-6" />
+
 
             {/* Name + photo row */}
             <div className="flex items-center gap-5 mb-5">
