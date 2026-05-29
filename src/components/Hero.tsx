@@ -125,11 +125,6 @@ export function Hero() {
 
           {/* LEFT: Content */}
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
-            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} className="flex items-center gap-2 mb-4">
-              <span style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.13em", color: "hsl(173 65% 48%)", textTransform: "uppercase" }}>Erfurt, Germany</span>
-              <span style={{ color: "hsl(173 65% 42% / 0.4)", fontSize: 11 }}>—</span>
-              <span style={{ fontFamily: "monospace", fontSize: 11, letterSpacing: "0.1em", color: "hsl(173 65% 42% / 0.65)", textTransform: "uppercase" }}>Open to EU Roles</span>
-            </motion.div>
             <motion.div initial={{ width: 0 }} animate={{ width: 36 }} transition={{ duration: 0.5, delay: 0.15 }} className="h-px bg-primary mb-6" />
 
             {/* Name + photo row */}

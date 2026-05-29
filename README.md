@@ -1,118 +1,79 @@
-# Rishma Merkaje Nanaiah — Portfolio
+# Rishma Merkaje Nanaiah
 
-Personal portfolio website for Rishma Merkaje Nanaiah, Frontend Engineer specialising in Angular and enterprise UI systems.
-
----
-
-## Tech Stack
-
-- **Framework:** React 18 + Vite
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS v4 + shadcn/ui
-- **Animations:** Framer Motion
-- **Theme:** Light / Dark toggle (next-themes)
-- **Icons:** Lucide React
+**Frontend Engineer · Angular & Enterprise UI Systems**  
+Erfurt, Germany · Open to EU roles · [merkajenanaiah@gmail.com](mailto:merkajenanaiah@gmail.com)
 
 ---
 
-## Getting Started
+## About
 
-### Prerequisites
+I build production-grade frontend systems with a focus on scalability, maintainability, and long-term usability. Over the last five years I have worked across Angular applications, enterprise UI platforms, backend integrations, and shared component systems used by multiple engineering teams.
 
-- Node.js 18+
-- npm or pnpm
-
-### Install and run
-
-```bash
-# Clone the repo
-git clone https://github.com/rishma123/portfolio.git
-cd portfolio
-
-# Install dependencies
-npm install
-
-# Start dev server
-npm run dev
-```
-
-The site will be available at `http://localhost:5173`
-
-### Build for production
-
-```bash
-npm run build
-```
-
-Output goes to the `dist/` folder. Deploy that folder to any static host (Vercel, Netlify, GitHub Pages).
+At EnBW Energie Baden-Württemberg AG I contributed to the shared frontend ecosystem by building reusable UI infrastructure adopted across teams. The component library I helped architect is now a foundational dependency across seven product teams inside one of Germany's largest energy companies.
 
 ---
 
-## Project Structure
+## Experience
 
-```
-src/
-├── components/
-│   ├── About.tsx        # Bio, education, stats
-│   ├── Contact.tsx      # Email, LinkedIn, GitHub, phone
-│   ├── Experience.tsx   # Work history with tech stack tags
-│   ├── Hero.tsx         # Landing section
-│   ├── Navbar.tsx       # Navigation + theme toggle
-│   ├── Projects.tsx     # Angular Component Analyzer + thesis
-│   ├── Skills.tsx       # Skill groups with tags
-│   └── ui/              # shadcn/ui component library
-├── pages/
-│   └── Home.tsx         # Section order: Hero → About → Skills → Experience → Projects → Contact
-├── index.css            # CSS variables for light + dark theme
-└── main.tsx             # App entry point
-```
+**EnBW Energie Baden-Württemberg AG** — Frontend Developer (Working Student)  
+Jan 2024 – Mar 2026 · Karlsruhe
 
----
+- Built 10+ reusable Angular components with accessibility, responsive layouts and shared design patterns deployed across multiple internal applications
+- Managed reactive state flows with RxJS, Signals and NgRx across shared components and consuming applications
+- Published a Storybook catalog with previews, usage notes and API documentation
+- Added unit and E2E test coverage with Jasmine, Karma and Playwright
 
-## Sections
+**LIRA Service GmbH** — Fullstack Developer (Working Student)  
+Nov 2022 – Mar 2023 · Paderborn
 
-| Section | Description |
-|---|---|
-| Hero | Name, title, CTA buttons |
-| About | Bio paragraphs, education, stat cards (5+, 7, 2018, E2E) |
-| Skills | Grouped skill tags: Frontend, Backend, DevOps, Testing, etc. |
-| Experience | EnBW, LIRA, Bosch, Infopine — role, achievements, stack |
-| Projects | Angular Component Analyzer (Next.js + Groq AI), HeaderGen thesis |
-| Contact | Email, LinkedIn, GitHub, phone number |
+- Delivered production features across Angular frontend and Spring Boot backend
+- Built REST APIs with Spring Boot and Oracle DB integrated into Angular-based workflow modules
+- Diagnosed and resolved production issues spanning frontend rendering, API responses and UI state
+
+**Bosch Global Software Technologies Pvt Ltd** — Fullstack Developer  
+Feb 2021 – Nov 2021 · Bengaluru
+
+- Replaced spreadsheet-driven engineering tracking with Angular-based internal tools
+- Reduced redundant API calls and improved RxJS data fetching performance on internal dashboards
+
+**Infopine Pvt Ltd** — Fullstack Developer  
+Nov 2018 – Aug 2020 · Mysuru
+
+- Delivered production web application features across JSP frontend, Spring Boot services and SQL layers
+- Optimised slow SQL queries and resolved production issues across multiple client projects
 
 ---
 
-## Theme
+## Skills
 
-Both light and dark themes are fully supported. All colours use CSS variables defined in `index.css` under `:root` (light) and `.dark` (dark). No hardcoded dark colours anywhere in components.
-
-Toggle is in the top-right of the navbar.
+**Frontend:** Angular (Signals, Standalone Components, Control Flow), TypeScript, RxJS, NgRx, NGXS, HTML5, CSS3, SCSS, Angular Material, Next.js, Tailwind CSS  
+**Backend:** Java, Spring Boot, REST APIs, Node.js  
+**Testing:** Playwright, Jasmine, Karma, Jest, JUnit 5  
+**Tools:** Git, GitHub, GitLab, Azure DevOps, Docker, Webpack, Storybook, Figma, VS Code  
+**Methodology:** Agile, Scrum, SAFe, Code Reviews
 
 ---
 
-## Deployment
+## Projects
 
-### Vercel (recommended)
+**Angular Component Analyzer** — [Live demo](https://angular-component-analyzer.vercel.app)  
+AI-powered tool that analyzes Angular component structure and behavior to improve code review quality. Detects missing patterns, generates MDX documentation, and produces a component health score. Built with Next.js 15, TypeScript, Tailwind CSS, Groq AI (LLaMA 3.3), deployed on Vercel.
 
-1. Go to [vercel.com](https://vercel.com) → Import Git Repository
-2. Select `rishma123/portfolio`
-3. Framework preset: **Vite**
-4. Deploy — done
+**HeaderGen: Jupyter Notebook Plugin** — M.Sc. Thesis  
+Jupyter plugin that automatically generates structured headers to improve notebook readability. Validated through a between-subjects user study (n=16) using t-tests and non-parametric statistical tests.
 
-### Netlify
+---
 
-1. Go to [netlify.com](https://netlify.com) → Add new site → Import from Git
-2. Select `rishma123/portfolio`
-3. Build command: `npm run build`
-4. Publish directory: `dist`
-5. Deploy
+## Education
+
+**M.Sc. Computer Science** — University of Paderborn  
+**B.Eng. Computer Science** — VVCE Mysuru
 
 ---
 
 ## Contact
 
-**Rishma Merkaje Nanaiah**
-- Email: merkajenanaiah@gmail.com
+- Email: [merkajenanaiah@gmail.com](mailto:merkajenanaiah@gmail.com)
 - LinkedIn: [linkedin.com/in/rishma97](https://www.linkedin.com/in/rishma97/)
 - GitHub: [github.com/rishma123](https://github.com/rishma123)
-- Location: Erfurt, Germany
+- Phone: +49 176 25649321
