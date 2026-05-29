@@ -1,95 +1,118 @@
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { ArrowRight, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { HeroCanvas } from "@/components/HeroCanvas";
 
-const MAP_W = 320;
-const MAP_H = 190;
-const DOT_SPACING = 9;
-const ERFURT_X = ((11.03 - -12) / 54) * MAP_W;
-const ERFURT_Y = ((70 - 50.98) / 35) * MAP_H;
+// Simplified Germany outline path (SVG viewBox 0 0 200 240)
+// Key cities roughly positioned
+const GERMANY_PATH = "M95,8 L102,12 L115,10 L125,18 L130,14 L138,20 L142,28 L148,30 L150,38 L145,44 L150,50 L148,58 L155,62 L158,70 L152,76 L155,84 L150,90 L153,98 L148,106 L152,114 L148,122 L142,128 L144,136 L138,144 L130,148 L124,156 L116,160 L108,168 L100,172 L92,168 L84,164 L76,158 L68,152 L62,144 L56,136 L52,128 L48,120 L44,112 L46,104 L42,96 L44,88 L40,80 L44,72 L42,64 L48,56 L52,48 L50,40 L56,34 L62,28 L70,22 L78,16 L88,10 Z";
 
-function europeOpacity(px: number, py: number): number {
-  const inBounds = px >= 22 && px <= 308 && py >= 6 && py <= 184;
-  if (!inBounds) return 0;
-  if (px < 70 && py > 130) return 0;
-  if (px > 275 && py < 40) return 0;
-  if (px > 255 && py > 150) return 0;
-  if (px < 40 && py < 80) return 0;
-  const dx = px - ERFURT_X;
-  const dy = py - ERFURT_Y;
-  const dist = Math.sqrt(dx * dx + dy * dy);
-  const proximity = Math.max(0, 1 - dist / 160);
-  return Math.min(0.72, 0.08 + proximity * 0.64);
-}
+// Erfurt position within the Germany SVG (approx center-east)
+const ERFURT = { x: 105, y: 98 };
 
-function useDots() {
-  return useMemo(() => {
-    const dots: { x: number; y: number; op: number }[] = [];
-    for (let x = DOT_SPACING / 2; x < MAP_W; x += DOT_SPACING) {
-      for (let y = DOT_SPACING / 2; y < MAP_H; y += DOT_SPACING) {
-        const op = europeOpacity(x, y);
-        if (op > 0) dots.push({ x, y, op });
-      }
-    }
-    return dots;
-  }, []);
+function GermanyMap({ isDark }: { isDark?: boolean }) {
+  return (
+    <svg viewBox="0 0 200 240" width="100%" height="100%" style={{ maxWidth: 200, maxHeight: 240 }}>
+      <defs>
+        <radialGradient id="erfurt-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="hsl(173 65% 42%)" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="hsl(173 65% 42%)" stopOpacity="0" />
+        </radialGradient>
+        <filter id="pin-glow">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+
+      {/* Germany fill */}
+      <path
+        d={GERMANY_PATH}
+        fill={isDark ? "hsl(173 65% 42% / 0.07)" : "hsl(173 65% 42% / 0.1)"}
+        stroke="hsl(173 65% 42%)"
+        strokeWidth="1.2"
+        strokeOpacity="0.5"
+      />
+
+      {/* Grid lines inside */}
+      <line x1="40" y1="80" x2="160" y2="80" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
+      <line x1="40" y1="110" x2="160" y2="110" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
+      <line x1="40" y1="140" x2="160" y2="140" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
+      <line x1="80" y1="10" x2="80" y2="180" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
+      <line x1="110" y1="10" x2="110" y2="180" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
+
+      {/* Pulse rings */}
+      {[14, 26, 40].map((r, i) => (
+        <circle key={i} cx={ERFURT.x} cy={ERFURT.y} r={r} fill="none" stroke="hsl(173 65% 42%)" strokeWidth="0.8" strokeOpacity="0">
+          <animate attributeName="r" values={`${r * 0.3};${r}`} dur={`${2.2 + i * 0.6}s`} begin={`${i * 0.55}s`} repeatCount="indefinite" />
+          <animate attributeName="stroke-opacity" values="0.6;0" dur={`${2.2 + i * 0.6}s`} begin={`${i * 0.55}s`} repeatCount="indefinite" />
+        </circle>
+      ))}
+
+      {/* Glow halo */}
+      <circle cx={ERFURT.x} cy={ERFURT.y} r={18} fill="url(#erfurt-glow)" />
+
+      {/* Pin outer ring */}
+      <circle cx={ERFURT.x} cy={ERFURT.y} r={5} fill="hsl(173 65% 42%)" fillOpacity="0.2" />
+      <circle cx={ERFURT.x} cy={ERFURT.y} r={3.5} fill="none" stroke="hsl(173 65% 42%)" strokeWidth="1.2" strokeOpacity="0.9" />
+      {/* Pin core */}
+      <circle cx={ERFURT.x} cy={ERFURT.y} r={2} fill="hsl(173 65% 42%)" filter="url(#pin-glow)" />
+      <circle cx={ERFURT.x} cy={ERFURT.y} r={0.9} fill="white" fillOpacity="0.95" />
+
+      {/* Label */}
+      <line x1={ERFURT.x + 2} y1={ERFURT.y - 4} x2={ERFURT.x + 16} y2={ERFURT.y - 18} stroke="hsl(173 65% 42%)" strokeWidth="0.7" strokeOpacity="0.7" />
+      <text x={ERFURT.x + 18} y={ERFURT.y - 20} fill="hsl(173 65% 52%)" fontSize="8" fontFamily="monospace" fontWeight="600">Erfurt</text>
+    </svg>
+  );
 }
 
 function LocationCard() {
-  const dots = useDots();
   return (
     <motion.div
       animate={{ y: [0, -8, 0] }}
       transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+      className="border border-border bg-card"
       style={{
-        width: 340,
-        borderRadius: 24,
-        background: "linear-gradient(160deg, hsl(220 25% 9% / 0.92) 0%, hsl(220 20% 6% / 0.96) 100%)",
-        border: "1px solid hsl(173 65% 42% / 0.18)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        boxShadow: [
-          "0 0 0 1px hsl(173 65% 42% / 0.07)",
-          "0 4px 40px hsl(0 0% 0% / 0.55)",
-          "inset 0 1px 0 hsl(173 65% 42% / 0.12)",
-        ].join(", "),
+        width: 320,
+        borderRadius: 20,
+        overflow: "hidden",
+        boxShadow: "0 8px 40px hsl(0 0% 0% / 0.12), 0 0 0 1px hsl(173 65% 42% / 0.08)",
       }}
     >
-      <div style={{ position: "relative", height: MAP_H + 10, overflow: "hidden", borderRadius: "24px 24px 0 0", background: "hsl(220 22% 7%)", borderBottom: "1px solid hsl(173 65% 42% / 0.1)" }}>
-        <div aria-hidden style={{ position: "absolute", left: ERFURT_X - 60, top: ERFURT_Y - 55, width: 120, height: 110, background: "radial-gradient(ellipse, hsl(173 65% 42% / 0.18) 0%, transparent 70%)", filter: "blur(18px)", pointerEvents: "none" }} />
-        <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} width={MAP_W} height={MAP_H} style={{ display: "block", margin: "5px auto 0" }}>
-          {dots.map(({ x, y, op }, i) => (<circle key={i} cx={x} cy={y} r={1.4} fill="hsl(173 65% 42%)" fillOpacity={op} />))}
-          {[18, 34, 52].map((r, i) => (
-            <circle key={`ring-${i}`} cx={ERFURT_X} cy={ERFURT_Y} r={r} fill="none" stroke="hsl(173 65% 42%)" strokeWidth="0.6" strokeOpacity={0}>
-              <animate attributeName="r" values={`${r * 0.3};${r}`} dur={`${2.4 + i * 0.7}s`} begin={`${i * 0.65}s`} repeatCount="indefinite" />
-              <animate attributeName="stroke-opacity" values="0.55;0" dur={`${2.4 + i * 0.7}s`} begin={`${i * 0.65}s`} repeatCount="indefinite" />
-            </circle>
-          ))}
-          <circle cx={ERFURT_X} cy={ERFURT_Y} r={6} fill="hsl(173 65% 42%)" fillOpacity={0.18} />
-          <circle cx={ERFURT_X} cy={ERFURT_Y} r={4} fill="none" stroke="hsl(173 65% 42%)" strokeWidth={1.2} strokeOpacity={0.9} />
-          <circle cx={ERFURT_X} cy={ERFURT_Y} r={2.2} fill="hsl(173 65% 42%)" />
-          <circle cx={ERFURT_X} cy={ERFURT_Y} r={1} fill="white" fillOpacity={0.95} />
-          <path d="M8 18 L8 8 L18 8" stroke="hsl(173 65% 42%)" strokeWidth="1" strokeOpacity="0.35" fill="none" />
-          <path d={`M${MAP_W - 18} 8 L${MAP_W - 8} 8 L${MAP_W - 8} 18`} stroke="hsl(173 65% 42%)" strokeWidth="1" strokeOpacity="0.35" fill="none" />
-          <path d={`M8 ${MAP_H - 18} L8 ${MAP_H - 8} L18 ${MAP_H - 8}`} stroke="hsl(173 65% 42%)" strokeWidth="1" strokeOpacity="0.35" fill="none" />
-          <path d={`M${MAP_W - 18} ${MAP_H - 8} L${MAP_W - 8} ${MAP_H - 8} L${MAP_W - 8} ${MAP_H - 18}`} stroke="hsl(173 65% 42%)" strokeWidth="1" strokeOpacity="0.35" fill="none" />
-          <line x1={0} y1={ERFURT_Y} x2={MAP_W} y2={ERFURT_Y} stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.18" strokeDasharray="4 6" />
-          <line x1={ERFURT_X} y1={0} x2={ERFURT_X} y2={MAP_H} stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.18" strokeDasharray="4 6" />
-        </svg>
-        <div style={{ position: "absolute", top: 10, right: 12, padding: "2px 8px", borderRadius: 4, background: "hsl(173 65% 42% / 0.12)", border: "1px solid hsl(173 65% 42% / 0.25)", fontFamily: "monospace", fontSize: 9, letterSpacing: "0.08em", color: "hsl(173 65% 52%)" }}>EU · LIVE</div>
+      {/* Map area — uses card bg so it adapts to theme */}
+      <div
+        className="relative bg-muted/40 border-b border-border"
+        style={{ height: 200 }}
+      >
+        {/* Ambient glow */}
+        <div aria-hidden style={{ position: "absolute", left: ERFURT.x - 40, top: ERFURT.y - 40, width: 80, height: 80, background: "radial-gradient(ellipse, hsl(173 65% 42% / 0.15) 0%, transparent 70%)", filter: "blur(16px)", pointerEvents: "none" }} />
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", padding: "16px" }}>
+          <GermanyMap />
+        </div>
+
+        {/* EU · LIVE badge */}
+        <div
+          className="absolute top-2.5 right-3 font-mono"
+          style={{ padding: "2px 8px", borderRadius: 4, background: "hsl(173 65% 42% / 0.12)", border: "1px solid hsl(173 65% 42% / 0.3)", fontSize: 9, letterSpacing: "0.08em", color: "hsl(173 65% 52%)" }}
+        >
+          DE · LIVE
+        </div>
       </div>
-      <div style={{ padding: "20px 22px 22px" }}>
-        <p style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.14em", color: "hsl(173 65% 42% / 0.6)", textTransform: "uppercase", marginBottom: 4 }}>Based In</p>
-        <p style={{ fontSize: 22, fontWeight: 700, color: "hsl(0 0% 96%)", letterSpacing: "-0.02em", lineHeight: 1.15, marginBottom: 6 }}>Erfurt, Germany</p>
-        <p style={{ fontFamily: "monospace", fontSize: 10.5, color: "hsl(173 65% 42% / 0.65)", letterSpacing: "0.04em", marginBottom: 14 }}>50.9787° N, 11.0328° E &nbsp;·&nbsp; CET (UTC+1)</p>
-        <div style={{ height: 1, background: "linear-gradient(90deg, hsl(173 65% 42% / 0.25), transparent)", marginBottom: 14 }} />
+
+      {/* Card content */}
+      <div style={{ padding: "18px 20px 20px" }}>
+        <p className="font-mono uppercase" style={{ fontSize: 10, letterSpacing: "0.14em", color: "hsl(173 65% 42% / 0.65)", marginBottom: 4 }}>Based In</p>
+        <p className="font-bold text-foreground" style={{ fontSize: 20, letterSpacing: "-0.02em", lineHeight: 1.15, marginBottom: 5 }}>Erfurt, Germany</p>
+        <p className="font-mono" style={{ fontSize: 10, color: "hsl(173 65% 42% / 0.6)", letterSpacing: "0.04em", marginBottom: 12 }}>
+          50.9787° N, 11.0328° E &nbsp;·&nbsp; CET (UTC+1)
+        </p>
+        <div style={{ height: 1, background: "linear-gradient(90deg, hsl(173 65% 42% / 0.2), transparent)", marginBottom: 12 }} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0 8px" }}>
           {[{ label: "Status", value: "Open to offers" }, { label: "Eligibility", value: "EU work permit" }, { label: "Languages", value: "DE B1 · EN C1" }].map(({ label, value }) => (
             <div key={label}>
-              <p style={{ fontFamily: "monospace", fontSize: 8.5, letterSpacing: "0.1em", color: "hsl(173 65% 42% / 0.5)", textTransform: "uppercase", marginBottom: 3 }}>{label}</p>
-              <p style={{ fontSize: 11, fontWeight: 500, color: "hsl(0 0% 82%)", lineHeight: 1.35 }}>{value}</p>
+              <p className="font-mono uppercase text-muted-foreground/60" style={{ fontSize: 8, letterSpacing: "0.1em", marginBottom: 3 }}>{label}</p>
+              <p className="text-foreground/80" style={{ fontSize: 11, fontWeight: 500, lineHeight: 1.35 }}>{value}</p>
             </div>
           ))}
         </div>
@@ -123,11 +146,9 @@ export function Hero() {
       <motion.div style={{ y: contentY }} className="container mx-auto px-6 max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-16 items-center">
 
-          {/* LEFT: Content */}
+          {/* LEFT */}
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
-
-
-            {/* Name + photo row */}
+            {/* Name + photo */}
             <div className="flex items-center gap-5 mb-5">
               <motion.h1
                 initial={{ opacity: 0, y: 12 }}
@@ -141,18 +162,8 @@ export function Hero() {
                 </span>
                 Rishma Merkaje Nanaiah
               </motion.h1>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.25 }}
-                className="shrink-0 hidden md:block"
-              >
-                <img
-                  src="/rishma.jpg"
-                  alt="Rishma Merkaje Nanaiah"
-                  className="w-20 h-20 rounded-full object-cover object-top border-2"
-                  style={{ borderColor: "hsl(173 65% 42% / 0.4)" }}
-                />
+              <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.25 }} className="shrink-0 hidden md:block">
+                <img src="/rishma.jpg" alt="Rishma Merkaje Nanaiah" className="w-20 h-20 rounded-full object-cover object-top border-2" style={{ borderColor: "hsl(173 65% 42% / 0.4)" }} />
               </motion.div>
             </div>
 
