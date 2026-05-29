@@ -2,8 +2,6 @@
 
 Personal portfolio website for Rishma Merkaje Nanaiah, Frontend Engineer specialising in Angular and enterprise UI systems.
 
-**Live:** [rishma123.github.io/portfolio](https://rishma123.github.io/portfolio) *(deploy to update)*
-
 ---
 
 ## Tech Stack
