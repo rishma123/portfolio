@@ -4,100 +4,49 @@ import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { HeroCanvas } from "@/components/HeroCanvas";
 
-// Simplified Germany outline path (SVG viewBox 0 0 200 240)
-// Key cities roughly positioned
-const GERMANY_PATH = "M95,8 L102,12 L115,10 L125,18 L130,14 L138,20 L142,28 L148,30 L150,38 L145,44 L150,50 L148,58 L155,62 L158,70 L152,76 L155,84 L150,90 L153,98 L148,106 L152,114 L148,122 L142,128 L144,136 L138,144 L130,148 L124,156 L116,160 L108,168 L100,172 L92,168 L84,164 L76,158 L68,152 L62,144 L56,136 L52,128 L48,120 L44,112 L46,104 L42,96 L44,88 L40,80 L44,72 L42,64 L48,56 L52,48 L50,40 L56,34 L62,28 L70,22 L78,16 L88,10 Z";
-
-// Erfurt position within the Germany SVG (approx center-east)
-const ERFURT = { x: 105, y: 98 };
-
-function GermanyMap({ isDark }: { isDark?: boolean }) {
-  return (
-    <svg viewBox="0 0 200 240" width="100%" height="100%" style={{ maxWidth: 200, maxHeight: 240 }}>
-      <defs>
-        <radialGradient id="erfurt-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="hsl(173 65% 42%)" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="hsl(173 65% 42%)" stopOpacity="0" />
-        </radialGradient>
-        <filter id="pin-glow">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-      </defs>
-
-      {/* Germany fill */}
-      <path
-        d={GERMANY_PATH}
-        fill={isDark ? "hsl(173 65% 42% / 0.07)" : "hsl(173 65% 42% / 0.1)"}
-        stroke="hsl(173 65% 42%)"
-        strokeWidth="1.2"
-        strokeOpacity="0.5"
-      />
-
-      {/* Grid lines inside */}
-      <line x1="40" y1="80" x2="160" y2="80" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
-      <line x1="40" y1="110" x2="160" y2="110" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
-      <line x1="40" y1="140" x2="160" y2="140" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
-      <line x1="80" y1="10" x2="80" y2="180" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
-      <line x1="110" y1="10" x2="110" y2="180" stroke="hsl(173 65% 42%)" strokeWidth="0.4" strokeOpacity="0.15" strokeDasharray="4 6" />
-
-      {/* Pulse rings */}
-      {[14, 26, 40].map((r, i) => (
-        <circle key={i} cx={ERFURT.x} cy={ERFURT.y} r={r} fill="none" stroke="hsl(173 65% 42%)" strokeWidth="0.8" strokeOpacity="0">
-          <animate attributeName="r" values={`${r * 0.3};${r}`} dur={`${2.2 + i * 0.6}s`} begin={`${i * 0.55}s`} repeatCount="indefinite" />
-          <animate attributeName="stroke-opacity" values="0.6;0" dur={`${2.2 + i * 0.6}s`} begin={`${i * 0.55}s`} repeatCount="indefinite" />
-        </circle>
-      ))}
-
-      {/* Glow halo */}
-      <circle cx={ERFURT.x} cy={ERFURT.y} r={18} fill="url(#erfurt-glow)" />
-
-      {/* Pin outer ring */}
-      <circle cx={ERFURT.x} cy={ERFURT.y} r={5} fill="hsl(173 65% 42%)" fillOpacity="0.2" />
-      <circle cx={ERFURT.x} cy={ERFURT.y} r={3.5} fill="none" stroke="hsl(173 65% 42%)" strokeWidth="1.2" strokeOpacity="0.9" />
-      {/* Pin core */}
-      <circle cx={ERFURT.x} cy={ERFURT.y} r={2} fill="hsl(173 65% 42%)" filter="url(#pin-glow)" />
-      <circle cx={ERFURT.x} cy={ERFURT.y} r={0.9} fill="white" fillOpacity="0.95" />
-
-      {/* Label */}
-      <line x1={ERFURT.x + 2} y1={ERFURT.y - 4} x2={ERFURT.x + 16} y2={ERFURT.y - 18} stroke="hsl(173 65% 42%)" strokeWidth="0.7" strokeOpacity="0.7" />
-      <text x={ERFURT.x + 18} y={ERFURT.y - 20} fill="hsl(173 65% 52%)" fontSize="8" fontFamily="monospace" fontWeight="600">Erfurt</text>
-    </svg>
-  );
-}
 
 function LocationCard() {
+  const W = 300, H = 160;
+  const ERFURT_CX = 195, ERFURT_CY = 82;
+  const gridCols = [60, 120, 180, 240];
+  const gridRows = [40, 80, 120];
+
   return (
     <motion.div
       animate={{ y: [0, -8, 0] }}
       transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
       className="border border-border bg-card"
-      style={{
-        width: 320,
-        borderRadius: 20,
-        overflow: "hidden",
-        boxShadow: "0 8px 40px hsl(0 0% 0% / 0.12), 0 0 0 1px hsl(173 65% 42% / 0.08)",
-      }}
+      style={{ width: 320, borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 40px hsl(0 0% 0% / 0.10)" }}
     >
-      {/* Map area — uses card bg so it adapts to theme */}
-      <div
-        className="relative bg-muted/40 border-b border-border"
-        style={{ height: 200 }}
-      >
-        {/* Ambient glow */}
-        <div aria-hidden style={{ position: "absolute", left: ERFURT.x - 40, top: ERFURT.y - 40, width: 80, height: 80, background: "radial-gradient(ellipse, hsl(173 65% 42% / 0.15) 0%, transparent 70%)", filter: "blur(16px)", pointerEvents: "none" }} />
-
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", padding: "16px" }}>
-          <GermanyMap />
-        </div>
-
-        {/* EU · LIVE badge */}
-        <div
-          className="absolute top-2.5 right-3 font-mono"
-          style={{ padding: "2px 8px", borderRadius: 4, background: "hsl(173 65% 42% / 0.12)", border: "1px solid hsl(173 65% 42% / 0.3)", fontSize: 9, letterSpacing: "0.08em", color: "hsl(173 65% 52%)" }}
-        >
-          DE · LIVE
-        </div>
+      {/* Map area */}
+      <div className="relative bg-muted/40 border-b border-border" style={{ height: H + 20 }}>
+        <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} style={{ display: "block", margin: "10px auto 0" }}>
+          {/* Grid lines */}
+          {gridCols.map(x => (
+            <line key={x} x1={x} y1={0} x2={x} y2={H} stroke="hsl(173 65% 42%)" strokeWidth="0.5" strokeOpacity="0.18" strokeDasharray="4 5" />
+          ))}
+          {gridRows.map(y => (
+            <line key={y} x1={0} y1={y} x2={W} y2={y} stroke="hsl(173 65% 42%)" strokeWidth="0.5" strokeOpacity="0.18" strokeDasharray="4 5" />
+          ))}
+          {/* Coord labels */}
+          <text x="4" y={H - 4} fontSize="8" fontFamily="monospace" fill="hsl(173 65% 42%)" fillOpacity="0.45">50.97°N</text>
+          <text x={W - 38} y={H - 4} fontSize="8" fontFamily="monospace" fill="hsl(173 65% 42%)" fillOpacity="0.45">11.03°E</text>
+          {/* Pulse rings */}
+          {[20, 36, 54].map((r, i) => (
+            <circle key={i} cx={ERFURT_CX} cy={ERFURT_CY} r={r} fill="none" stroke="hsl(173 65% 42%)" strokeWidth="0.8" strokeOpacity="0">
+              <animate attributeName="r" values={`${r * 0.3};${r}`} dur={`${2.2 + i * 0.6}s`} begin={`${i * 0.55}s`} repeatCount="indefinite" />
+              <animate attributeName="stroke-opacity" values="0.55;0" dur={`${2.2 + i * 0.6}s`} begin={`${i * 0.55}s`} repeatCount="indefinite" />
+            </circle>
+          ))}
+          {/* Pin */}
+          <circle cx={ERFURT_CX} cy={ERFURT_CY} r={6} fill="hsl(173 65% 42%)" fillOpacity="0.15" />
+          <circle cx={ERFURT_CX} cy={ERFURT_CY} r={4} fill="none" stroke="hsl(173 65% 42%)" strokeWidth="1.2" strokeOpacity="0.9" />
+          <circle cx={ERFURT_CX} cy={ERFURT_CY} r={2.2} fill="hsl(173 65% 42%)" />
+          <circle cx={ERFURT_CX} cy={ERFURT_CY} r={1} fill="white" fillOpacity="0.95" />
+          {/* Label */}
+          <line x1={ERFURT_CX + 4} y1={ERFURT_CY - 4} x2={ERFURT_CX + 18} y2={ERFURT_CY - 18} stroke="hsl(173 65% 42%)" strokeWidth="0.7" strokeOpacity="0.6" />
+          <text x={ERFURT_CX + 20} y={ERFURT_CY - 20} fontSize="9" fontFamily="monospace" fill="hsl(173 65% 52%)" fontWeight="600">Erfurt</text>
+        </svg>
       </div>
 
       {/* Card content */}
